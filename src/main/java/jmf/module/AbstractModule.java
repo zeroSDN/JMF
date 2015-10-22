@@ -1,19 +1,3 @@
-/*
- * Copyright 2015 ZSDN Project Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package jmf.module;
 
 import java.util.Collection;
@@ -41,7 +25,7 @@ public abstract class AbstractModule {
     /** Unique identifier of this module */
 	private final ModuleUniqueId uniqueId;
     /** Version of this module */
-	private final UnsignedInteger version;
+	private final short version;
     /** Name of this module */
 	private final String name;
     /** Dependencies needed by this module */
@@ -82,19 +66,33 @@ public abstract class AbstractModule {
     /**
      * Base class constructor for modules. Sets given parameters and allows ZMF to internally access their values.
      * @param uniqueId Unique identifier of this module
-     * @param version Version of this module
+     * @param version Version of this module, is interpreted as unsigned 16bit value
      * @param name Name of this module
      * @param dependencies Dependencies needed by this module
      */
-	public AbstractModule(ModuleUniqueId uniqueId, UnsignedInteger version, String name, Collection<ModuleDependency> dependencies) {
-        if(version.intValue() > 65535) {
-            throw new IllegalArgumentException("Illegal version value > 65535, only ushort values allowed");
-        }
+	public AbstractModule(ModuleUniqueId uniqueId, short version, String name, Collection<ModuleDependency> dependencies) {
 		this.uniqueId = uniqueId;
 		this.version = version;
 		this.name = name;
 		this.dependencies = dependencies;
 	}
+
+    /**
+     * Base class constructor for modules. Sets given parameters and allows ZMF to internally access their values.
+     * @param uniqueId Unique identifier of this module
+     * @param version Version of this module, is interpreted as unsigned 16bit value
+     * @param name Name of this module
+     * @param dependencies Dependencies needed by this module
+     */
+    public AbstractModule(ModuleUniqueId uniqueId, UnsignedInteger version, String name, Collection<ModuleDependency> dependencies) {
+        if(version.intValue() > 65535) {
+            throw new IllegalArgumentException("Illegal version value > 65535, only ushort values allowed");
+        }
+        this.uniqueId = uniqueId;
+        this.version = version.shortValue();
+        this.name = name;
+        this.dependencies = dependencies;
+    }
 
 
     /** @return Unique identifier of this module */
@@ -108,9 +106,13 @@ public abstract class AbstractModule {
 	}
 
     /** @return Version of this module */
-	public final UnsignedInteger getVersion() {
+	public final short getVersion() {
 		return version;
 	}
+    /** @return Version of this module */
+    public final UnsignedInteger getVersionUnsigned() {
+        return UnsignedInteger.fromIntBits(Short.toUnsignedInt(version));
+    }
 
     /** @return Dependencies needed by this module */
 	public final Collection<ModuleDependency> getDependencies() {
@@ -224,21 +226,21 @@ public abstract class AbstractModule {
      * @return String with name and instance ID [name]:[instanceId] eg. ModulX:1
      */
 	public final String getNameInstanceString() {
-		return name + ":" + uniqueId.getInstanceId().toString();
+		return name + ":" + uniqueId.getInstanceIdUnsigned().toString();
 	}
 
     /**
      * @return String with name, type and instance ID [name]([typeId]):[instanceId] eg. ModulX(2):1
      */
 	public final String getNameTypeInstanceString() {
-		return getModuleName() + "(" + uniqueId.getTypeId().toString() + "):" +
-				uniqueId.getInstanceId().toString();
+		return getModuleName() + "(" + uniqueId.getTypeIdUnsigned().toString() + "):" +
+				uniqueId.getInstanceIdUnsigned().toString();
 	}
 
     /**
      * @return String with name, type ID, instance ID and version [name]([typeId]):[instanceId]_v[version] eg. ModulX(2):1_v1
      */
 	public final String getNameTypeInstanceVersionString() {
-		return getNameInstanceString() + "_v" + version.toString();
+		return getNameInstanceString() + "_v" + getVersionUnsigned().toString();
 	}
 }

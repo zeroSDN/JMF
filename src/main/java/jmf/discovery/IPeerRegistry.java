@@ -1,19 +1,3 @@
-/*
- * Copyright 2015 ZSDN Project Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package jmf.discovery;
 
 import java.util.List;
@@ -58,7 +42,7 @@ public interface IPeerRegistry {
 	 * @param onlyActivePeers Returns only all active peers
 	 * @return A list of all modules with the given type, an empty list if there are none
 	 */
-	List<ModuleHandle> getPeersWithType(UnsignedInteger type,
+	List<ModuleHandle> getPeersWithType(short type,
 															boolean onlyActivePeers);
 
 	/**
@@ -67,7 +51,7 @@ public interface IPeerRegistry {
 	 * @param onlyActivePeers Checks only all active peers
 	 * @return True if there is at least one module of the given type in the registry
 	 */
-	boolean containsPeerWithType(UnsignedInteger type, boolean onlyActivePeers);
+	boolean containsPeerWithType(short type, boolean onlyActivePeers);
 
 	/**
 	 * Contract: Thread safe and returns copied list, not concurrently modified later
@@ -75,7 +59,7 @@ public interface IPeerRegistry {
 	 * @param onlyActivePeers Returns only all active peers
 	 * @return A list of all modules with the given type, an empty set if there are none
 	 */
-	ModuleHandle getAnyPeerWithType(UnsignedInteger type,
+	ModuleHandle getAnyPeerWithType(short type,
 														boolean onlyActivePeers);
 
 
@@ -85,8 +69,8 @@ public interface IPeerRegistry {
 	 * @param onlyActivePeers Returns only all active peers
 	 * @return A list of all modules with the given type and version, an empty set if there are none
 	 */
-	List<ModuleHandle> getPeersWithTypeVersion(UnsignedInteger type,
-																   UnsignedInteger version,
+	List<ModuleHandle> getPeersWithTypeVersion(short type,
+                                               short version,
 																   boolean onlyActivePeers);
 
 	/**
@@ -95,7 +79,7 @@ public interface IPeerRegistry {
 	 * @param onlyActivePeers only checks all active peers
 	 * @return True if there is at least one module of the given type with the given version in the registry
 	 */
-	boolean containsPeerWithTypeVersion(UnsignedInteger type, UnsignedInteger version, boolean onlyActivePeers);
+	boolean containsPeerWithTypeVersion(short type, short version, boolean onlyActivePeers);
 
 	/**
 	 * Contract: Thread safe and returns shared_ptr on module handle (copy)
@@ -104,7 +88,7 @@ public interface IPeerRegistry {
 	 * @return Returns one module if at least one module of the given type with the given version in the registry.
 	 * Otherwise Null
 	 */
-	ModuleHandle getAnyPeerWithTypeVersion(UnsignedInteger type, UnsignedInteger version,
+	ModuleHandle getAnyPeerWithTypeVersion(short type, short version,
 															   boolean onlyActivePeers);
 
 

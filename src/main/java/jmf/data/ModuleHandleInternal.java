@@ -1,19 +1,3 @@
-/*
- * Copyright 2015 ZSDN Project Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package jmf.data;
 
 import com.google.common.primitives.UnsignedInteger;
@@ -32,7 +16,7 @@ public class ModuleHandleInternal implements ModuleHandle {
 	/** Unique identifier of the module (type+instance id) */
 	private final ModuleUniqueId uniqueId;
 	/** Version of this module */
-	private final UnsignedInteger version;
+	private final short version;
 	/** Name of this module (human readable */
 	private final String name;
 	/** local ZMQ socket port */
@@ -49,20 +33,24 @@ public class ModuleHandleInternal implements ModuleHandle {
 
 	private final boolean self;
 
-	public ModuleHandleInternal(final ModuleUniqueId moduleId, final UnsignedInteger version, final String name, final boolean self) {
-		if (version.intValue() > 65535) {
-			throw new IllegalArgumentException("Illegal version value > 65535, only ushort values allowed");
-		}
+	public ModuleHandleInternal(final ModuleUniqueId moduleId, final short version, final String name, final boolean self) {
 		this.uniqueId = moduleId;
 		this.name = name;
 		this.version = version;
 		this.self = self;
 	}
 
-	public ModuleHandleInternal(final ModuleUniqueId moduleId, final UnsignedInteger version, final String name, final String zmqPubAddr, final String zmqRepAddr, final boolean self) {
-		if (version.intValue() > 65535) {
-			throw new IllegalArgumentException("Illegal version value > 65535, only ushort values allowed");
-		}
+    public ModuleHandleInternal(final ModuleUniqueId moduleId, final UnsignedInteger version, final String name, final boolean self) {
+        if (version.intValue() > 65535) {
+            throw new IllegalArgumentException("Illegal version value > 65535, only ushort values allowed");
+        }
+        this.uniqueId = moduleId;
+        this.name = name;
+        this.version = version.shortValue();
+        this.self = self;
+    }
+
+	public ModuleHandleInternal(final ModuleUniqueId moduleId, final short version, final String name, final String zmqPubAddr, final String zmqRepAddr, final boolean self) {
 		uniqueId = moduleId;
 		this.name = name;
 		this.version = version;
@@ -91,9 +79,13 @@ public class ModuleHandleInternal implements ModuleHandle {
 		return uniqueId;
 	}
 
-	public UnsignedInteger getVersion() {
+	public short getVersion() {
 		return version;
 	}
+
+    public UnsignedInteger getVersionUnsigned() {
+        return UnsignedInteger.fromIntBits(Short.toUnsignedInt(version));
+    }
 
 	public String getName() {
 		return name;

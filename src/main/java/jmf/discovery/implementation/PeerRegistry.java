@@ -1,19 +1,3 @@
-/*
- * Copyright 2015 ZSDN Project Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package jmf.discovery.implementation;
 
 import java.util.ArrayList;
@@ -71,14 +55,14 @@ public class PeerRegistry implements IPeerRegistry {
 		peersMap.put(toAdd.getUniqueId(), toAdd);
 
 		// Add to modules by type
-		if (peersByTypeMap.containsKey(toAdd.getUniqueId().getTypeId().shortValue())) {
+		if (peersByTypeMap.containsKey(toAdd.getUniqueId().getTypeId())) {
 			// Add to existing set
-			peersByTypeMap.get(toAdd.getUniqueId().getTypeId().shortValue()).add(toAdd);
+			peersByTypeMap.get(toAdd.getUniqueId().getTypeId()).add(toAdd);
 		} else {
 			// Create new set
 			final List<ModuleHandle> newTypeList = new ArrayList<>();
 			newTypeList.add(toAdd);
-			peersByTypeMap.put(toAdd.getUniqueId().getTypeId().shortValue(), newTypeList);
+			peersByTypeMap.put(toAdd.getUniqueId().getTypeId(), newTypeList);
 		}
 	}
 
@@ -95,7 +79,9 @@ public class PeerRegistry implements IPeerRegistry {
 				}
 			} else {
 				// Module already in registry
-				logger.error("Tried to add a module twice to the registry: " + toAdd.getUniqueId().getTypeId().toString() + ":" + toAdd.getUniqueId().getInstanceId().toString());
+				logger.error("Tried to add a module twice to the registry: " +
+                        toAdd.getUniqueId().getTypeIdUnsigned().toString() + ":" +
+                        toAdd.getUniqueId().getInstanceIdUnsigned().toString());
 			}
 		}
 	}
@@ -106,10 +92,10 @@ public class PeerRegistry implements IPeerRegistry {
 			peersMap.remove(toRemoveId);
 
 			// Erase from allModulesByType
-			final List<ModuleHandle> typeList = peersByTypeMap.get(toRemoveId.getTypeId().shortValue());
+			final List<ModuleHandle> typeList = peersByTypeMap.get(toRemoveId.getTypeId());
 			if (typeList.size() == 1) {
 				// If all assumptions are correct this module is the last module of this type
-				peersByTypeMap.remove(toRemoveId.getTypeId().shortValue());
+				peersByTypeMap.remove(toRemoveId.getTypeId());
 			} else {
 				// Remove module from type list
 				int toRemoveIndex = 0;
@@ -134,8 +120,8 @@ public class PeerRegistry implements IPeerRegistry {
 				removeModuleInternal(toRemoveId, allActivePeers, allActivePeersByType);
 			} else {
 				// Module not in registry
-				logger.error("Tried to remove a module not in the registry: " + toRemoveId.getTypeId().toString() + ":" +
-						toRemoveId.getInstanceId().toString());
+				logger.error("Tried to remove a module not in the registry: " + toRemoveId.getTypeIdUnsigned().toString() + ":" +
+						toRemoveId.getInstanceIdUnsigned().toString());
 			}
 		}
 	}
@@ -195,11 +181,11 @@ public class PeerRegistry implements IPeerRegistry {
 	 * 		Returns only all active peers
 	 * @return A list of all modules with the given type, an empty list if there are none
 	 */
-	public synchronized List<ModuleHandle> getPeersWithType(final UnsignedInteger type, final boolean onlyActivePeers) {
-		
+	public synchronized List<ModuleHandle> getPeersWithType(final short type, final boolean onlyActivePeers) {
+
 		final ConcurrentMap<Short, List<ModuleHandle>> allPeersTmp = onlyActivePeers ? allActivePeersByType : allPeersByType;
-		if (allPeersTmp.containsKey(type.shortValue())) {
-			return new ArrayList<>(allPeersTmp.get(type.shortValue()));
+		if (allPeersTmp.containsKey(type)) {
+			return new ArrayList<>(allPeersTmp.get(type));
 		} else {
 			return new ArrayList<>();
 		}
@@ -213,12 +199,12 @@ public class PeerRegistry implements IPeerRegistry {
 	 * 		Checks only all active peers
 	 * @return True if there is at least one module of the given type in the registry
 	 */
-	public synchronized boolean containsPeerWithType(final UnsignedInteger type, final boolean onlyActivePeers) {
+	public synchronized boolean containsPeerWithType(final short type, final boolean onlyActivePeers) {
 		
 		if (onlyActivePeers) {
-			return allActivePeersByType.containsKey(type.shortValue());
+			return allActivePeersByType.containsKey(type);
 		} else {
-			return allPeersByType.containsKey(type.shortValue());
+			return allPeersByType.containsKey(type);
 		}
 	}
 
@@ -230,11 +216,11 @@ public class PeerRegistry implements IPeerRegistry {
 	 * 		Returns only all active peers
 	 * @return A list of all modules with the given type, an empty set if there are none
 	 */
-	public synchronized ModuleHandle getAnyPeerWithType(final UnsignedInteger type, final boolean onlyActivePeers) {
+	public synchronized ModuleHandle getAnyPeerWithType(final short type, final boolean onlyActivePeers) {
 		
 		final ConcurrentMap<Short, List<ModuleHandle>> allPeersTmp = onlyActivePeers ? allActivePeersByType : allPeersByType;
-		if (allPeersTmp.containsKey(type.shortValue())) {
-			final List<ModuleHandle> typePeers = allPeersTmp.get(type.shortValue());
+		if (allPeersTmp.containsKey(type)) {
+			final List<ModuleHandle> typePeers = allPeersTmp.get(type);
 			for (final ModuleHandle peer : typePeers) {
 				return peer;
 			}
@@ -250,14 +236,14 @@ public class PeerRegistry implements IPeerRegistry {
 	 * 		Returns only all active peers
 	 * @return A list of all modules with the given type and version, an empty set if there are none
 	 */
-	public synchronized List<ModuleHandle> getPeersWithTypeVersion(final UnsignedInteger type, final UnsignedInteger version, final boolean onlyActivePeers) {
+	public synchronized List<ModuleHandle> getPeersWithTypeVersion(final short type, final short version, final boolean onlyActivePeers) {
 		
 		final ConcurrentMap<Short, List<ModuleHandle>> allPeersTmp = onlyActivePeers ? allActivePeersByType : allPeersByType;
-		if (allPeersTmp.containsKey(type.shortValue())) {
-			final List<ModuleHandle> typePeers = allPeersTmp.get(type.shortValue());
+		if (allPeersTmp.containsKey(type)) {
+			final List<ModuleHandle> typePeers = allPeersTmp.get(type);
 			final List<ModuleHandle> typeVersionPeers = new ArrayList<>();
 			for (final ModuleHandle peer : typePeers) {
-				if (peer.getVersion().equals(version)) {
+				if (peer.getVersion() == version) {
 					typeVersionPeers.add(peer);
 				}
 			}
@@ -275,13 +261,13 @@ public class PeerRegistry implements IPeerRegistry {
 	 * 		only checks all active peers
 	 * @return True if there is at least one module of the given type with the given version in the registry
 	 */
-	public synchronized boolean containsPeerWithTypeVersion(final UnsignedInteger type, final UnsignedInteger version, final boolean onlyActivePeers) {
+	public synchronized boolean containsPeerWithTypeVersion(final short type, final short version, final boolean onlyActivePeers) {
 		
 		final ConcurrentMap<Short, List<ModuleHandle>> allPeersTmp = onlyActivePeers ? allActivePeersByType : allPeersByType;
-		if (allPeersTmp.containsKey(type.shortValue())) {
-			final List<ModuleHandle> typePeers = allPeersTmp.get(type.shortValue());
+		if (allPeersTmp.containsKey(type)) {
+			final List<ModuleHandle> typePeers = allPeersTmp.get(type);
 			for (final ModuleHandle peer : typePeers) {
-				if (peer.getVersion().equals(version)) {
+				if (peer.getVersion() == version) {
 					return true;
 				}
 			}
@@ -298,13 +284,13 @@ public class PeerRegistry implements IPeerRegistry {
 	 * @return Returns one module if at least one module of the given type with the given version in the registry.
 	 * Otherwise Null
 	 */
-	public synchronized ModuleHandle getAnyPeerWithTypeVersion(final UnsignedInteger type, final UnsignedInteger version, final boolean onlyActivePeers) {
+	public synchronized ModuleHandle getAnyPeerWithTypeVersion(final short type, final short version, final boolean onlyActivePeers) {
 		
 		final ConcurrentMap<Short, List<ModuleHandle>> allPeersTmp = onlyActivePeers ? allActivePeersByType : allPeersByType;
-		if (allPeersTmp.containsKey(type.shortValue())) {
-			final List<ModuleHandle> typePeers = allPeersTmp.get(type.shortValue());
+		if (allPeersTmp.containsKey(type)) {
+			final List<ModuleHandle> typePeers = allPeersTmp.get(type);
 			for (final ModuleHandle peer : typePeers) {
-				if (peer.getVersion().equals(version)) {
+				if (peer.getVersion() == version) {
 					return peer;
 				}
 			}

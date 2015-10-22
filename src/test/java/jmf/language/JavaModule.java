@@ -1,19 +1,3 @@
-/*
- * Copyright 2015 ZSDN Project Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package jmf.language;
 
 import com.google.common.primitives.UnsignedInteger;
@@ -149,19 +133,19 @@ public class JavaModule extends AbstractModule {
      * @param additionalState The additional state the searched module should have
      * @return returns whether the check was successful or not
      */
-    public boolean checkPartnerInfos(ModuleUniqueId cPartnerId,String name, int version, byte[] additionalState){
+    public boolean checkPartnerInfos(ModuleUniqueId cPartnerId,String name, short version, byte[] additionalState){
         final ModuleHandle handle = getFramework().getPeerRegistry().getPeerWithId(cPartnerId,true);
         if (handle == null){
             return false;
         }
-        UnsignedInteger p_version = handle.getVersion();
+        short p_version = handle.getVersion();
         String p_name = handle.getName();
         byte[] p_addState= getFramework().getPeerRegistry().getPeerAdditionalState(handle);
 
         if (!(name.equals(p_name))){
             return false;
         }
-        if (!(version == p_version.intValue())){
+        if (!(version == p_version)){
             return false;
         }
         if (p_addState.length != additionalState.length){

@@ -1,19 +1,3 @@
-/*
- * Copyright 2015 ZSDN Project Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package jmf.language;
 
 import com.google.common.primitives.UnsignedInteger;
@@ -255,7 +239,7 @@ public class LanguageTester {
                     ModuleUniqueId cId = new ModuleUniqueId(UnsignedInteger.fromIntBits(1), UnsignedLong.fromLongBits(cModuleInstance));
                     String addInfoString = "C1" + cModuleInstance;
                     byte[] addI = addInfoString.getBytes();
-                    if (!(modules1.get(i).checkPartnerInfos(cId, "C++_1_" + cModuleInstance, 2, addI))) {
+                    if (!(modules1.get(i).checkPartnerInfos(cId, "C++_1_" + cModuleInstance, (short)2, addI))) {
                         result = false;
                         break;
                     }

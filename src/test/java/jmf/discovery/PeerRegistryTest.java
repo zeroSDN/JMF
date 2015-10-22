@@ -1,19 +1,3 @@
-/*
- * Copyright 2015 ZSDN Project Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package jmf.discovery;
 
 import org.junit.Assert;
@@ -28,7 +12,7 @@ import jmf.data.ModuleUniqueId;
 import jmf.discovery.implementation.PeerRegistry;
 
 /**
- * TODO Describe
+ * Tests the PeerRegistry service, how it recognizes, handles and stores changes of peers.
  * Created on 8/6/15.
  * @author Jonas Grunert
  */
@@ -40,45 +24,45 @@ public class PeerRegistryTest {
 		//this.subject = new ConfigurationProviderImplementation(Optional.of("src/test/resources/testConfig.config"));
 	}
 
-	ModuleUniqueId id10 = new ModuleUniqueId(UnsignedInteger.fromIntBits(1), UnsignedLong.fromLongBits(0));
-	ModuleUniqueId id11 = new ModuleUniqueId(UnsignedInteger.fromIntBits(1), UnsignedLong.fromLongBits(1));
-	ModuleUniqueId id12 = new ModuleUniqueId(UnsignedInteger.fromIntBits(1), UnsignedLong.fromLongBits(2));
-	ModuleUniqueId id20 = new ModuleUniqueId(UnsignedInteger.fromIntBits(2), UnsignedLong.fromLongBits(0));
-	ModuleUniqueId id21 = new ModuleUniqueId(UnsignedInteger.fromIntBits(2), UnsignedLong.fromLongBits(1));
-	ModuleUniqueId id30 = new ModuleUniqueId(UnsignedInteger.fromIntBits(3), UnsignedLong.fromLongBits(0));
+	ModuleUniqueId id10 = new ModuleUniqueId((short)(1), (0));
+	ModuleUniqueId id11 = new ModuleUniqueId((short)(1), (1));
+	ModuleUniqueId id12 = new ModuleUniqueId((short)(1), (2));
+	ModuleUniqueId id20 = new ModuleUniqueId((short)(2), (0));
+	ModuleUniqueId id21 = new ModuleUniqueId((short)(2), (1));
+	ModuleUniqueId id30 = new ModuleUniqueId((short)(3), (0));
 
 	void checkRegistryEmpty(PeerRegistry peerRegistry, boolean onlyActivePeers) {
 		Assert.assertTrue(peerRegistry.INTERNAL_getAllPeers(onlyActivePeers).size() == 0);
 		Assert.assertTrue(peerRegistry.INTERNAL_getAllPeersByType(onlyActivePeers).size() == 0);
 		// Contains no type of peers
-		Assert.assertTrue(!peerRegistry.containsPeerWithType(UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithType(UnsignedInteger.fromIntBits(2), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithType(UnsignedInteger.fromIntBits(3), onlyActivePeers));
-		Assert.assertTrue(peerRegistry.getPeersWithType(UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithType(UnsignedInteger.fromIntBits(2), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithType(UnsignedInteger.fromIntBits(3), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithType(UnsignedInteger.fromIntBits(1), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithType(UnsignedInteger.fromIntBits(2), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithType(UnsignedInteger.fromIntBits(2), onlyActivePeers) == null);
+		Assert.assertTrue(!peerRegistry.containsPeerWithType((short)(1), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithType((short)(2), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithType((short)(3), onlyActivePeers));
+		Assert.assertTrue(peerRegistry.getPeersWithType((short)(1), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithType((short)(2), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithType((short)(3), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithType((short)(1), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithType((short)(2), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithType((short)(2), onlyActivePeers) == null);
 		// No types, not versions
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(0), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(0), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(0), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(0), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(0), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(0), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(0), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(1), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(0), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(1), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(0), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(1), onlyActivePeers) == null);
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(1), (short)(0), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(1), (short)(1), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(2), (short)(0), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(2), (short)(1), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(3), (short)(0), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(3), (short)(1), onlyActivePeers));
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(1), (short)(0), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(1), (short)(1), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(2), (short)(0), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(2), (short)(1), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(3), (short)(0), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(3), (short)(1), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(1), (short)(0), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(1), (short)(1), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(2), (short)(0), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(2), (short)(1), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(3), (short)(0), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(3), (short)(1), onlyActivePeers) == null);
 		// Contains no peers
 		Assert.assertTrue(!peerRegistry.containsPeerWithId(id10, onlyActivePeers));
 		Assert.assertTrue(!peerRegistry.containsPeerWithId(id11, onlyActivePeers));
@@ -98,35 +82,35 @@ public class PeerRegistryTest {
 		Assert.assertTrue(peerRegistry.INTERNAL_getAllPeers(onlyActivePeers).size() == 1);
 		Assert.assertTrue(peerRegistry.INTERNAL_getAllPeersByType(onlyActivePeers).size() == 1);
 		// Contains no type of peers
-		Assert.assertTrue(peerRegistry.containsPeerWithType(UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithType(UnsignedInteger.fromIntBits(2), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithType(UnsignedInteger.fromIntBits(3), onlyActivePeers));
-		Assert.assertTrue(peerRegistry.getPeersWithType(UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 1);
-		Assert.assertTrue(peerRegistry.getPeersWithType(UnsignedInteger.fromIntBits(2), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithType(UnsignedInteger.fromIntBits(3), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithType(UnsignedInteger.fromIntBits(1), onlyActivePeers) != null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithType(UnsignedInteger.fromIntBits(2), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithType(UnsignedInteger.fromIntBits(3), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.containsPeerWithType((short)(1), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithType((short)(2), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithType((short)(3), onlyActivePeers));
+		Assert.assertTrue(peerRegistry.getPeersWithType((short)(1), onlyActivePeers).size() == 1);
+		Assert.assertTrue(peerRegistry.getPeersWithType((short)(2), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithType((short)(3), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithType((short)(1), onlyActivePeers) != null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithType((short)(2), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithType((short)(3), onlyActivePeers) == null);
 		// No types, not versions
-		Assert.assertTrue(peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(0), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(0), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(0), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(0), onlyActivePeers).size() == 1);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(0), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(0), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(0), onlyActivePeers) != null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(0), onlyActivePeers).getUniqueId().equals(id10));
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(1), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(0), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(1), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(0), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(1), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.containsPeerWithTypeVersion((short)(1), (short)(0), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(1), (short)(1), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(2), (short)(0), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(2), (short)(1), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(3), (short)(0), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(3), (short)(1), onlyActivePeers));
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(1), (short)(0), onlyActivePeers).size() == 1);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(1), (short)(1), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(2), (short)(0), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(2), (short)(1), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(3), (short)(0), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(3), (short)(1), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(1), (short)(0), onlyActivePeers) != null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(1), (short)(0), onlyActivePeers).getUniqueId().equals(id10));
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(1), (short)(1), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(2), (short)(0), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(2), (short)(1), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(3), (short)(0), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(3), (short)(1), onlyActivePeers) == null);
 		// Contains no peers
 		Assert.assertTrue(peerRegistry.containsPeerWithId(id10, onlyActivePeers));
 		Assert.assertTrue(!peerRegistry.containsPeerWithId(id11, onlyActivePeers));
@@ -147,36 +131,36 @@ public class PeerRegistryTest {
 		Assert.assertTrue(peerRegistry.INTERNAL_getAllPeers(onlyActivePeers).size() == 2);
 		Assert.assertTrue(peerRegistry.INTERNAL_getAllPeersByType(onlyActivePeers).size() == 2);
 		// Contains no type of peers
-		Assert.assertTrue(peerRegistry.containsPeerWithType(UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(peerRegistry.containsPeerWithType(UnsignedInteger.fromIntBits(2), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithType(UnsignedInteger.fromIntBits(3), onlyActivePeers));
-		Assert.assertTrue(peerRegistry.getPeersWithType(UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 1);
-		Assert.assertTrue(peerRegistry.getPeersWithType(UnsignedInteger.fromIntBits(2), onlyActivePeers).size() == 1);
-		Assert.assertTrue(peerRegistry.getPeersWithType(UnsignedInteger.fromIntBits(3), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithType(UnsignedInteger.fromIntBits(1), onlyActivePeers) != null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithType(UnsignedInteger.fromIntBits(2), onlyActivePeers) != null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithType(UnsignedInteger.fromIntBits(3), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.containsPeerWithType((short)(1), onlyActivePeers));
+		Assert.assertTrue(peerRegistry.containsPeerWithType((short)(2), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithType((short)(3), onlyActivePeers));
+		Assert.assertTrue(peerRegistry.getPeersWithType((short)(1), onlyActivePeers).size() == 1);
+		Assert.assertTrue(peerRegistry.getPeersWithType((short)(2), onlyActivePeers).size() == 1);
+		Assert.assertTrue(peerRegistry.getPeersWithType((short)(3), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithType((short)(1), onlyActivePeers) != null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithType((short)(2), onlyActivePeers) != null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithType((short)(3), onlyActivePeers) == null);
 		// No types, not versions
-		Assert.assertTrue(peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(0), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(0), onlyActivePeers));
-		Assert.assertTrue(peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(0), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(0), onlyActivePeers).size() == 1);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(0), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 1);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(0), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(0), onlyActivePeers) != null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(0), onlyActivePeers).getUniqueId().equals(id10));
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(1), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(0), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(1), onlyActivePeers) != null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(1), onlyActivePeers).getUniqueId().equals(id21));
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(0), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(1), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.containsPeerWithTypeVersion((short)(1), (short)(0), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(1), (short)(1), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(2), (short)(0), onlyActivePeers));
+		Assert.assertTrue(peerRegistry.containsPeerWithTypeVersion((short)(2), (short)(1), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(3), (short)(0), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(3), (short)(1), onlyActivePeers));
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(1), (short)(0), onlyActivePeers).size() == 1);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(1), (short)(1), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(2), (short)(0), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(2), (short)(1), onlyActivePeers).size() == 1);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(3), (short)(0), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(3), (short)(1), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(1), (short)(0), onlyActivePeers) != null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(1), (short)(0), onlyActivePeers).getUniqueId().equals(id10));
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(1), (short)(1), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(2), (short)(0), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(2), (short)(1), onlyActivePeers) != null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(2), (short)(1), onlyActivePeers).getUniqueId().equals(id21));
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(3), (short)(0), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(3), (short)(1), onlyActivePeers) == null);
 		// Contains no peers
 		Assert.assertTrue(peerRegistry.containsPeerWithId(id10, onlyActivePeers));
 		Assert.assertTrue(!peerRegistry.containsPeerWithId(id11, onlyActivePeers));
@@ -198,36 +182,36 @@ public class PeerRegistryTest {
 		Assert.assertTrue(peerRegistry.INTERNAL_getAllPeers(onlyActivePeers).size() == 5);
 		Assert.assertTrue(peerRegistry.INTERNAL_getAllPeersByType(onlyActivePeers).size() == 2);
 		// Contains no type of peers
-		Assert.assertTrue(peerRegistry.containsPeerWithType(UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(peerRegistry.containsPeerWithType(UnsignedInteger.fromIntBits(2), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithType(UnsignedInteger.fromIntBits(3), onlyActivePeers));
-		Assert.assertTrue(peerRegistry.getPeersWithType(UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 3);
-		Assert.assertTrue(peerRegistry.getPeersWithType(UnsignedInteger.fromIntBits(2), onlyActivePeers).size() == 2);
-		Assert.assertTrue(peerRegistry.getPeersWithType(UnsignedInteger.fromIntBits(3), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithType(UnsignedInteger.fromIntBits(1), onlyActivePeers) != null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithType(UnsignedInteger.fromIntBits(2), onlyActivePeers) != null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithType(UnsignedInteger.fromIntBits(3), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.containsPeerWithType((short)(1), onlyActivePeers));
+		Assert.assertTrue(peerRegistry.containsPeerWithType((short)(2), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithType((short)(3), onlyActivePeers));
+		Assert.assertTrue(peerRegistry.getPeersWithType((short)(1), onlyActivePeers).size() == 3);
+		Assert.assertTrue(peerRegistry.getPeersWithType((short)(2), onlyActivePeers).size() == 2);
+		Assert.assertTrue(peerRegistry.getPeersWithType((short)(3), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithType((short)(1), onlyActivePeers) != null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithType((short)(2), onlyActivePeers) != null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithType((short)(3), onlyActivePeers) == null);
 		// No types, not versions
-		Assert.assertTrue(peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(0), onlyActivePeers));
-		Assert.assertTrue(peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(0), onlyActivePeers));
-		Assert.assertTrue(peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(0), onlyActivePeers));
-		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(1), onlyActivePeers));
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(0), onlyActivePeers).size() == 1);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 2);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(0), onlyActivePeers).size() == 1);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 1);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(0), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(1), onlyActivePeers).size() == 0);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(0), onlyActivePeers) != null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(0), onlyActivePeers).getUniqueId().equals(id10));
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(1), UnsignedInteger.fromIntBits(1), onlyActivePeers) != null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(0), onlyActivePeers) != null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(1), onlyActivePeers) != null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(2), UnsignedInteger.fromIntBits(1), onlyActivePeers).getUniqueId().equals(id21));
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(0), onlyActivePeers) == null);
-		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion(UnsignedInteger.fromIntBits(3), UnsignedInteger.fromIntBits(1), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.containsPeerWithTypeVersion((short)(1), (short)(0), onlyActivePeers));
+		Assert.assertTrue(peerRegistry.containsPeerWithTypeVersion((short)(1), (short)(1), onlyActivePeers));
+		Assert.assertTrue(peerRegistry.containsPeerWithTypeVersion((short)(2), (short)(0), onlyActivePeers));
+		Assert.assertTrue(peerRegistry.containsPeerWithTypeVersion((short)(2), (short)(1), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(3), (short)(0), onlyActivePeers));
+		Assert.assertTrue(!peerRegistry.containsPeerWithTypeVersion((short)(3), (short)(1), onlyActivePeers));
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(1), (short)(0), onlyActivePeers).size() == 1);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(1), (short)(1), onlyActivePeers).size() == 2);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(2), (short)(0), onlyActivePeers).size() == 1);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(2), (short)(1), onlyActivePeers).size() == 1);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(3), (short)(0), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getPeersWithTypeVersion((short)(3), (short)(1), onlyActivePeers).size() == 0);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(1), (short)(0), onlyActivePeers) != null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(1), (short)(0), onlyActivePeers).getUniqueId().equals(id10));
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(1), (short)(1), onlyActivePeers) != null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(2), (short)(0), onlyActivePeers) != null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(2), (short)(1), onlyActivePeers) != null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(2), (short)(1), onlyActivePeers).getUniqueId().equals(id21));
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(3), (short)(0), onlyActivePeers) == null);
+		Assert.assertTrue(peerRegistry.getAnyPeerWithTypeVersion((short)(3), (short)(1), onlyActivePeers) == null);
 		// Contains no peers
 		Assert.assertTrue(peerRegistry.containsPeerWithId(id10, onlyActivePeers));
 		Assert.assertTrue(peerRegistry.containsPeerWithId(id11, onlyActivePeers));
@@ -245,17 +229,20 @@ public class PeerRegistryTest {
 		Assert.assertTrue(peerRegistry.getPeerWithId(id30, onlyActivePeers) == null);
 	}
 
+    /**
+     * Tests a sequence of peer state changes
+     */
 	@Test
 	public void testRegistry() {
 		PeerRegistry peerRegistry = new PeerRegistry();
 
 		// Creates adds and removes modules from peer registry
 
-		ModuleHandleInternal testHandle10 = new ModuleHandleInternal(id10, UnsignedInteger.fromIntBits(0), "testHandle10", true);
-		ModuleHandleInternal testHandle11 = new ModuleHandleInternal(id11, UnsignedInteger.fromIntBits(1), "testHandle11", true);
-		ModuleHandleInternal testHandle12 = new ModuleHandleInternal(id12, UnsignedInteger.fromIntBits(1), "testHandle12", true);
-		ModuleHandleInternal testHandle20 = new ModuleHandleInternal(id20, UnsignedInteger.fromIntBits(0), "testHandle20", true);
-		ModuleHandleInternal testHandle21 = new ModuleHandleInternal(id21, UnsignedInteger.fromIntBits(1), "testHandle21", true);
+		ModuleHandleInternal testHandle10 = new ModuleHandleInternal(id10, (short)(0), "testHandle10", true);
+		ModuleHandleInternal testHandle11 = new ModuleHandleInternal(id11, (short)(1), "testHandle11", true);
+		ModuleHandleInternal testHandle12 = new ModuleHandleInternal(id12, (short)(1), "testHandle12", true);
+		ModuleHandleInternal testHandle20 = new ModuleHandleInternal(id20, (short)(0), "testHandle20", true);
+		ModuleHandleInternal testHandle21 = new ModuleHandleInternal(id21, (short)(1), "testHandle21", true);
 
 		// Registry must be empty at the beginning
 		checkRegistryEmpty(peerRegistry, true);

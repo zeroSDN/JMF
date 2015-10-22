@@ -1,19 +1,3 @@
-/*
- * Copyright 2015 ZSDN Project Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package jmf.discovery.implementation;
 
 import java.io.IOException;
@@ -280,7 +264,7 @@ public class PeerDiscoveryService implements IPeerDiscoveryService {
 				final FrameworkProto.StateBroadcast.Builder multicastBuilder = FrameworkProto.StateBroadcast.newBuilder();
 				multicastBuilder.setZmqPubPort(this.selfHandle.getSelfPubPort());
 				multicastBuilder.setZmqRepPort(this.selfHandle.getSelfRepPort());
-				multicastBuilder.setVersion(this.selfHandle.getVersion().shortValue());
+				multicastBuilder.setVersion(Short.toUnsignedInt(this.selfHandle.getVersion()));
 				multicastBuilder.setLifecycleState(this.selfState.ordinal());
 				multicastBuilder.setAdditionalStateInfos(ByteString.copyFrom(selfAdditionalState));
 				multicastBuilder.setMulticastIdentifier(multicastIdentifier);
@@ -382,7 +366,7 @@ public class PeerDiscoveryService implements IPeerDiscoveryService {
 		}
 
 		// check if disableEqualModuleInterconnect_ is set and if this is the case, discard any msg from peers with same module id
-		if (this.disableEqualModuleInterconnect && peerId.getTypeId().intValue() == this.selfHandle.getUniqueId().getTypeId().intValue()) {
+		if (this.disableEqualModuleInterconnect && peerId.getTypeId() == this.selfHandle.getUniqueId().getTypeId()) {
 			LOGGER.debug("ignoring peer with same module type");
 			return;
 		}
@@ -410,7 +394,7 @@ public class PeerDiscoveryService implements IPeerDiscoveryService {
 				final String pubAddr = "tcp://" + senderIp + ":" + String.valueOf(stateMulticast.getZmqPubPort());
 				final String repAddr = "tcp://" + senderIp + ":" + String.valueOf(stateMulticast.getZmqRepPort());
 				
-				peerHandle = new ModuleHandleInternal(peerId, UnsignedInteger.fromIntBits(stateMulticast.getVersion()), stateMulticast.getSenderName(), pubAddr, repAddr, false);
+				peerHandle = new ModuleHandleInternal(peerId, (short)stateMulticast.getVersion(), stateMulticast.getSenderName(), pubAddr, repAddr, false);
 				onPeerNew(peerHandle, peerState, additionalStateInfo);
 			} else {
 				peerHandle.resetPeerTimeout();

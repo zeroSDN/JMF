@@ -1,19 +1,3 @@
-/*
- * Copyright 2015 ZSDN Project Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package jmf.data;
 
 import java.util.Objects;
@@ -35,9 +19,9 @@ import jmf.proto.FrameworkProto;
 public class ModuleUniqueId {
 
     /** ID describing the module type */
-	private final UnsignedInteger typeId;
+	private final short typeId;
     /** ID describing the module instance */
-	private final UnsignedLong instanceId;
+	private final long instanceId;
 
 	private final FrameworkProto.SenderId senderProto;
 	private final byte[] senderProtoBytes;
@@ -45,7 +29,7 @@ public class ModuleUniqueId {
 	/**
      * Initializing constructor
 	 * @param typeId
-	 * 		Unsigned Short value vor type ID
+	 * 		Unsigned Short value vor type ID, is interpreted as unsigned 16bit value
 	 * @param instanceId
 	 * 		Unsigned Long value for instance ID
 	 */
@@ -53,18 +37,32 @@ public class ModuleUniqueId {
 		if (typeId.intValue() > 65535) {
 			throw new IllegalArgumentException("Illegal typeId value > 65535, only ushort values allowed");
 		}
-		this.typeId = typeId;
-		this.instanceId = instanceId;
+		this.typeId = typeId.shortValue();
+		this.instanceId = instanceId.longValue();
 		this.senderProto = FrameworkProto.SenderId.newBuilder().setTypeId(typeId.shortValue()).setInstanceId(instanceId.longValue()).build();
 		this.senderProtoBytes = senderProto.toByteArray();
 	}
+
+    /**
+     * Initializing constructor
+     * @param typeId
+     * 		Unsigned Short value vor type ID, is interpreted as unsigned 16bit value
+     * @param instanceId
+     * 		Unsigned Long value for instance ID
+     */
+    public ModuleUniqueId(final short typeId, final long instanceId) {
+        this.typeId = typeId;
+        this.instanceId = instanceId;
+        this.senderProto = FrameworkProto.SenderId.newBuilder().setTypeId(Short.toUnsignedInt(typeId)).setInstanceId(instanceId).build();
+        this.senderProtoBytes = senderProto.toByteArray();
+    }
 	
 	public ModuleUniqueId(final byte[] senderProtoRaw) {
 		try {
 			senderProto = FrameworkProto.SenderId.parseFrom(senderProtoRaw);
 			senderProtoBytes = senderProto.toByteArray();
-			typeId = UnsignedInteger.valueOf(senderProto.getTypeId());
-			instanceId = UnsignedLong.valueOf(senderProto.getInstanceId());
+			typeId = (short)senderProto.getTypeId();
+			instanceId = senderProto.getInstanceId();
 		} catch (final InvalidProtocolBufferException e) {
 			throw new RuntimeException(e);
 		}
@@ -73,8 +71,8 @@ public class ModuleUniqueId {
 	public ModuleUniqueId(final FrameworkProto.SenderId senderId) {
 		senderProto = senderId;
 		senderProtoBytes = senderId.toByteArray();
-		typeId = UnsignedInteger.valueOf(senderId.getTypeId());
-		instanceId = UnsignedLong.valueOf(senderId.getInstanceId());
+		typeId = (short)senderId.getTypeId();
+		instanceId = senderId.getInstanceId();
 	}
 	/**
 	 * Constructor for ModuleuniqueId from a string
@@ -83,26 +81,40 @@ public class ModuleUniqueId {
 	 */
 	public ModuleUniqueId(String data){
 		String[] parts = data.split(":");
-		this.typeId = UnsignedInteger.valueOf(parts[0]);
-		this.instanceId = UnsignedLong.valueOf(parts[1]);
-		this.senderProto = FrameworkProto.SenderId.newBuilder().setTypeId(typeId.shortValue()).setInstanceId(instanceId.longValue()).build();
+		this.typeId = UnsignedInteger.valueOf(parts[0]).shortValue();
+		this.instanceId = UnsignedLong.valueOf(parts[1]).longValue();
+		this.senderProto = FrameworkProto.SenderId.newBuilder().setTypeId(typeId).setInstanceId(instanceId).build();
 		this.senderProtoBytes = senderProto.toByteArray();
 			
 	}
 
+
     /**
      * @return ID describing the module type
      */
-	public UnsignedInteger getTypeId() {
+	public short getTypeId() {
 		return typeId;
 	}
+    /**
+     * @return ID describing the module type as UnsignedInt
+     */
+    public UnsignedInteger getTypeIdUnsigned() {
+        return UnsignedInteger.fromIntBits(typeId);
+    }
 
     /**
      * @return ID describing the module instance
      */
-	public UnsignedLong getInstanceId() {
+	public long getInstanceId() {
 		return instanceId;
 	}
+    /**
+     * @return ID describing the module instance as UnsignedLong
+     */
+    public UnsignedLong getInstanceIdUnsigned() {
+        return UnsignedLong.fromLongBits(instanceId);
+    }
+
 
 	public byte[] getSenderProtoBytes() {
 		return senderProtoBytes;
@@ -114,7 +126,7 @@ public class ModuleUniqueId {
 
 	@Override
 	public String toString() {
-		return typeId.toString() + ":" + instanceId.toString();
+		return Integer.toUnsignedString(Short.toUnsignedInt(typeId)) + ":" + Long.toUnsignedString(instanceId);
 	}
 
 	@Override
@@ -126,7 +138,7 @@ public class ModuleUniqueId {
 			return false;
 		}
 		final ModuleUniqueId that = (ModuleUniqueId) o;
-		return typeId.equals(that.typeId) && instanceId.equals(that.instanceId);
+		return typeId == that.typeId && instanceId  == that.instanceId;
 	}
 
 	@Override
