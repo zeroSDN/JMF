@@ -3,13 +3,13 @@ package jmf.data.builder;
 import java.nio.BufferOverflowException;
 import java.util.Random;
 
+import org.junit.Assert;
 import org.junit.Test;
 
-import junit.framework.Assert;
-
 /**
- * TODO Describe
+ * Test message type builder
  * Created on 8/6/15.
+ *
  * @author Jan Strauß
  */
 public class MessageTypeBuilderTest {

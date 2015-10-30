@@ -1,13 +1,13 @@
 package jmf.util;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.zeromq.ZFrame;
 
-import junit.framework.Assert;
-
 /**
- * TODO Descrive
+ * Test byte utils class
  * Created on 8/6/15.
+ *
  * @author Jan Strauß
  */
 public class ByteUtilsTest {

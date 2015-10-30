@@ -14,7 +14,7 @@ import jmf.messaging.IMessagingCore;
 import jmf.messaging.IMessagingService;
 
 /**
- * TODO Descrive
+ * General messaging test
  * Created on 8/2/15.
  * @author Jan Strauß
  */

@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * TODO Describe
+ * Test message type contains method
  * Created on 8/5/15.
  * @author Jan Strauß
  */

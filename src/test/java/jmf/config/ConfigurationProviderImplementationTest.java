@@ -2,15 +2,15 @@ package jmf.config;
 
 import java.util.Optional;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import jmf.config.implementation.ConfigurationProviderImplementation;
-import junit.framework.Assert;
-
 
 /**
- * TODO Describe
+ * Test ConfigProvider implementation
  * Created on 8/2/15.
+ *
  * @author Jan Strauß
  */
 public class ConfigurationProviderImplementationTest {

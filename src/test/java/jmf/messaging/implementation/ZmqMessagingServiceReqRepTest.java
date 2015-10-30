@@ -15,7 +15,7 @@ import jmf.messaging.IMessagingCore;
 import jmf.messaging.IMessagingService;
 
 /**
- * TODO Descrive
+ * Test req/rep implementation
  * Created on 8/2/15.
  * @author Jan Strauß
  */

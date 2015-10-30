@@ -19,7 +19,7 @@ import jmf.messaging.IMessagingCore;
 import jmf.messaging.IMessagingService;
 
 /**
- * TODO Descrive
+ * test zmq implementation with two producers and one consumer
  * Created on 8/2/15.
  * @author Jan Strauß
  */
