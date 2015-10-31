@@ -262,7 +262,7 @@ public class ModuleEventDispatcher implements ISubscriptionHandler, IMessagingCo
 	 * @param module
 	 * 		the module that has joined the network
 	 */
-	public void onPeerStateChange(final ModuleHandleInternal module, final ModuleLifecycleState newState, final ModuleLifecycleState lastState) {
+	public void onPeerChange(final ModuleHandleInternal module, final ModuleLifecycleState newState, final ModuleLifecycleState lastState) {
 
 		// Notify ZMQ service
 		if (lastState == ModuleLifecycleState.Dead) {

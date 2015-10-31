@@ -9,6 +9,6 @@ import jmf.data.ModuleLifecycleState;
  * @author Tobias Korb
  */
 public interface IPeerDiscoveryCore {
-	void peerStateChange(final ModuleHandleInternal module, final ModuleLifecycleState newState,
+	void onPeerChange(final ModuleHandleInternal module, final ModuleLifecycleState newState,
 						 final ModuleLifecycleState lastState);
 }

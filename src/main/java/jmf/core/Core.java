@@ -136,7 +136,9 @@ public class Core implements IFrameworkAccess, IFrameworkController {
 
 		LOGGER.trace("Trying to start JmfCore - ZMQ Service started");
 		// Now start peer discovery service
-		if (!peerDiscoveryService.start(this, selfModuleHandle, PEER_DISCOVERY_BROADCAST_FREQ, PEER_DISCOVERY_UDP_PORT, peerDiscoveryWait, disableEqualModuleInterconnect)) {
+		if (!peerDiscoveryService.start(eventDispatcher, selfModuleHandle,
+                PEER_DISCOVERY_BROADCAST_FREQ, PEER_DISCOVERY_UDP_PORT,
+                peerDiscoveryWait, disableEqualModuleInterconnect)) {
 			LOGGER.error("Trying to start JmfCore: Failed to start PeerDeiscovery Service - canceling Start");
 			eventDispatcher.stop();
 			return false;
@@ -525,22 +527,6 @@ public class Core implements IFrameworkAccess, IFrameworkController {
 		return content.getData()[0] == 0x02;
 	}
 
-	/**
-	 * Called when there are state changes of a module
-	 *
-	 * @param lastState
-	 * 		the know state of the module
-	 * @param module
-	 * 		the module that has changed
-	 */
-	@Override
-	public void peerStateChange(final ModuleHandleInternal module, final ModuleLifecycleState newState, final ModuleLifecycleState lastState) {
-		synchronized (lockPeerChange) {
-			lockPeerChange.notifyAll();
-		}
-
-		eventDispatcher.onPeerStateChange(module, newState, lastState);
-	}
 
 	@Override
 	public AbstractModule getModule() {

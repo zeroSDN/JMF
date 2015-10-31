@@ -55,7 +55,7 @@ public class PeerDiscoveryServiceTest {
 		 * 		The old lifecycle state the module had before
 		 */
 		@Override
-		public void peerStateChange(final ModuleHandleInternal module, final ModuleLifecycleState newState, final ModuleLifecycleState lastState) {
+		public void onPeerChange(final ModuleHandleInternal module, final ModuleLifecycleState newState, final ModuleLifecycleState lastState) {
 
 		}
 	}

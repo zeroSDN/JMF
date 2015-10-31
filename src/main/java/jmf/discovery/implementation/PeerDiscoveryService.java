@@ -404,7 +404,7 @@ public class PeerDiscoveryService implements IPeerDiscoveryService {
 				if (oldState != peerState) {
 					LOGGER.debug("Peer state changed: " + peerHandle.getUniqueId().toString() + " to " + peerState.toString());
 					peerRegistry.INTERNAL_updatePeerState(peerHandle, peerState);
-					this.core.peerStateChange(peerHandle, peerState, oldState);
+					this.core.onPeerChange(peerHandle, peerState, oldState);
 				}
 
 			}
@@ -449,7 +449,7 @@ public class PeerDiscoveryService implements IPeerDiscoveryService {
 		}
 		LOGGER.debug("New Peer registered: " + newPeer.getUniqueId().toString());
 		this.peerRegistry.addModule(newPeer, peerState, peerAdditionalState);
-		this.core.peerStateChange(newPeer, peerState, ModuleLifecycleState.Dead);
+		this.core.onPeerChange(newPeer, peerState, ModuleLifecycleState.Dead);
 	}
 
 	/**
@@ -465,7 +465,7 @@ public class PeerDiscoveryService implements IPeerDiscoveryService {
 		LOGGER.debug("Peer dead: " + deadPeer.getUniqueId().toString());
 		final ModuleLifecycleState lastState = peerRegistry.getPeerState(deadPeer);
 		this.peerRegistry.removeModule(deadPeer.getUniqueId());
-		this.core.peerStateChange(deadPeer, ModuleLifecycleState.Dead, lastState);
+		this.core.onPeerChange(deadPeer, ModuleLifecycleState.Dead, lastState);
 	}
 
 	/**
