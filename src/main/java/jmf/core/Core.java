@@ -32,7 +32,7 @@ import jmf.module.IFrameworkController;
  * @author Jonas Grunert
  * @author Tobias Korb
  */
-public class Core implements IFrameworkAccess, IPeerDiscoveryCore, IFrameworkController {
+public class Core implements IFrameworkAccess, IFrameworkController {
 
 	/** broadcastFrequency Peer discovery Frequency to send out state broadcasts (in milliseconds between broadcasts) */
 	private static final int PEER_DISCOVERY_BROADCAST_FREQ = 1000;

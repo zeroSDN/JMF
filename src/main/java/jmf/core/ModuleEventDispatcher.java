@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
+import jmf.discovery.IPeerDiscoveryCore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,7 @@ import jmf.module.IFrameworkController;
  * @author Tobias Korb
  * created on 7/13/15.
  */
-public class ModuleEventDispatcher implements ISubscriptionHandler, IMessagingCore {
+public class ModuleEventDispatcher implements ISubscriptionHandler, IMessagingCore, IPeerDiscoveryCore {
 	
 	private static abstract class ModuleEventNotification {
 		public enum Type {EVENT, REQUEST, PeerStateChange}
