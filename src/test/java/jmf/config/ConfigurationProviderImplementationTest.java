@@ -38,6 +38,6 @@ public class ConfigurationProviderImplementationTest {
 
 	@Test
 	public void testGetAsDouble() throws Exception {
-		Assert.assertEquals(subject.getAsDouble("doubleValue").getAsDouble(), 4.20);
+		Assert.assertTrue(subject.getAsDouble("doubleValue").getAsDouble() == 4.20);
 	}
 }
