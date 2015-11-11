@@ -248,7 +248,7 @@ public class ZmqMessagingService implements IMessagingService {
 				notifyPoller(NotifyType.MEMBERSHIP_CHANCE);
 
 			} else {
-				LOGGER_MAIN.warn("tried to add peer already known: " + identity);
+				LOGGER_MAIN.debug("tried to add peer already known: " + identity);
 			}
 		}
 	}
